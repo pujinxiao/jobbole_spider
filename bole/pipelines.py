@@ -46,7 +46,7 @@ class MysqlTwistedPipline(object):
     def process_item(self, item, spider):
         #使用twisted将mysql插入变成异步执行
         query = self.dbpool.runInteraction(self.do_insert, item)
-        #query.addErrback(self.handle_error, item, spider) #处理异常
+        query.addErrback(self.handle_error, item, spider) #处理异常
 
     def handle_error(self, failure, item, spider):
         # 处理异步插入的异常
