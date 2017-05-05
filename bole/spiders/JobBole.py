@@ -2,6 +2,10 @@
 import scrapy
 from scrapy.http import Request
 from urllib import parse
+#信号量
+from selenium import webdriver
+from scrapy.xlib.pydispatch import dispatcher #分发器
+from scrapy import signals #信号量  作用当spider关闭的时候，退出chrome
 
 from bole.items import JobBoleArticleItem,ArticleItemLoader
 from bole.function import get_md5
@@ -10,6 +14,18 @@ class JobboleSpider(scrapy.Spider):
     name = "JobBole"
     allowed_domains = ["jobbole.com"]
     start_urls = ['http://blog.jobbole.com/all-posts/']
+
+    def __init__(self):
+        '''chrome放在spider中，防止每打开一个url就跳出一个chrome'''
+        self.browser=webdriver.Chrome(executable_path='E:/chromedriver.exe')
+        self.browser.set_page_load_timeout(30)
+        super(JobboleSpider, self).__init__()
+        dispatcher.connect(self.spider_close,signals.spider_closed)
+
+    def spider_close(self,spider):
+        #当爬虫退出的时候关闭Chrome
+        print("spider closed")
+        self.browser.quit()
 
     def parse(self, response):
         '''

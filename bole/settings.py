@@ -52,9 +52,10 @@ COOKIES_ENABLED = False
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-# DOWNLOADER_MIDDLEWARES = {
-#    'bole.middlewares.RandomUserAgentMiddleware': 543,
-# }
+DOWNLOADER_MIDDLEWARES = {
+   #'bole.middlewares.RandomUserAgentMiddleware': 543,
+   'bole.middlewares.JSPageMiddleware': 544,
+}
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
@@ -64,11 +65,11 @@ COOKIES_ENABLED = False
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-    'scrapy.pipelines.images.ImagesPipeline': 2,
-    'bole.pipelines.ArticleImagePipeline': 3,
-    'bole.pipelines.MysqlTwistedPipline': 4,
-}
+# ITEM_PIPELINES = {
+#     'scrapy.pipelines.images.ImagesPipeline': 2,
+#     'bole.pipelines.ArticleImagePipeline': 3,
+#     'bole.pipelines.MysqlTwistedPipline': 4,
+# }
 IMAGES_URLS_FIELD = "front_image_url"
 project_dir = os.path.abspath(os.path.dirname(__file__))
 IMAGES_STORE = os.path.join(project_dir, 'images')

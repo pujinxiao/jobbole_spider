@@ -39,3 +39,22 @@ class RandomUserAgentMiddleware(object):
         else:
             ua = get_ua()
             request.headers.setdefault('User-Agent', get_ua())
+
+
+from selenium.common.exceptions import TimeoutException
+from scrapy.http import HtmlResponse  #传递js加载后的源代码,不会返回给download
+class JSPageMiddleware(object):
+    #通过chrome请求动态网页
+    def process_request(self, request, spider):
+        if spider.name == "JobBole":
+            try:
+                spider.browser.get(request.url)
+            except TimeoutException:
+                print('30秒timeout之后，直接结束本页面')
+                spider.browser.execute_script('window.stop()')
+            import time
+            time.sleep(3)
+            print("访问:{0}".format(request.url))
+
+            return HtmlResponse(url=spider.browser.current_url, body=spider.browser.page_source, encoding="utf-8", request=request)
+            '''编码默认是unicode'''
