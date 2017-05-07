@@ -13,25 +13,40 @@ from bole.function import get_md5
 class JobboleSpider(scrapy.Spider):
     name = "JobBole"
     allowed_domains = ["jobbole.com"]
-    start_urls = ['http://blog.jobbole.com/all-posts/']
+    start_urls = ['http://blog.jobbole.com/all-postswwwww/']
 
-    def __init__(self):
-        '''chrome放在spider中，防止每打开一个url就跳出一个chrome'''
-        self.browser=webdriver.Chrome(executable_path='E:/chromedriver.exe')
-        self.browser.set_page_load_timeout(30)
-        super(JobboleSpider, self).__init__()
-        dispatcher.connect(self.spider_close,signals.spider_closed)
+    # def __init__(self):
+    #     '''chrome放在spider中，防止每打开一个url就跳出一个chrome'''
+    #     self.browser=webdriver.Chrome(executable_path='E:/chromedriver.exe')
+    #     self.browser.set_page_load_timeout(30)
+    #     super(JobboleSpider, self).__init__()
+    #     dispatcher.connect(self.spider_close,signals.spider_closed)
+    #
+    # def spider_close(self,spider):
+    #     #当爬虫退出的时候关闭Chrome
+    #     print("spider closed")
+    #     self.browser.quit()
 
-    def spider_close(self,spider):
-        #当爬虫退出的时候关闭Chrome
-        print("spider closed")
-        self.browser.quit()
+    # 收集伯乐在线所有404的url以及404页面数
+    handle_httpstatus_list = [404]
+
+    def __init__(self, **kwargs):
+        self.fail_urls = []
+        dispatcher.connect(self.handle_spider_closed, signals.spider_closed)
+
+    def handle_spider_closed(self, spider, reason):
+        self.crawler.stats.set_value("failed_urls", ",".join(self.fail_urls))
 
     def parse(self, response):
         '''
         1. 获取文章列表页中的文章url并交给scrapy下载后并进行解析
         2. 获取下一页的url并交给scrapy进行下载， 下载完成后交给parse
         '''
+
+        # 解析列表页中的所有文章url并交给scrapy下载后并进行解析
+        if response.status == 404:
+            self.fail_urls.append(response.url)
+            self.crawler.stats.inc_value("failed_url")
 
         #解析列表页中的所有文章url并交给scrapy下载后并进行解析
         post_nodes=response.xpath('//*[@id="archive"]/div/div[1]/a')

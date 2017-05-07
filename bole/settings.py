@@ -52,10 +52,10 @@ COOKIES_ENABLED = False
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-DOWNLOADER_MIDDLEWARES = {
-   #'bole.middlewares.RandomUserAgentMiddleware': 543,
-   'bole.middlewares.JSPageMiddleware': 544,
-}
+# DOWNLOADER_MIDDLEWARES = {
+#    #'bole.middlewares.RandomUserAgentMiddleware': 543,
+#    'bole.middlewares.JSPageMiddleware': 544,
+# }
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
